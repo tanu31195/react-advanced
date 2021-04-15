@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import useDocumentTitle from "./useDocumentTitle";
 import axios from 'axios';
 
 function Users(props) {
@@ -11,6 +12,7 @@ function Users(props) {
 
         getUsers();
     });
+    useDocumentTitle('Users');
     return (
         <div>
             <ul>

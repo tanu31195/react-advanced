@@ -66,6 +66,76 @@ useEffect hook will enable lifecycle methods in functional components
 
 <hr>
 
+When using network/API calls we need to use async await functions  
+Function that is passed to the useEffect hook should be a regular function  
+Check src/hooks/Users.jsx:7
+
 ### Custom hooks
 
 We can use common logic into custom hooks and use it in components
+
+## Context
+
+Data can be passed down the component tree without prop drilling  
+Providers and consumers will be used  
+Redux was used before context was introduced  
+
+### Context in Class Components
+
+- Can have different types of context
+Eg: UserContext, ThemeContext
+- Pascal naming convention is used to name context
+
+1. Create Context object using React.createContext(). This returns a context object
+`const UserContext = React.createContext();`
+
+2. Provide in a top component.  
+   Wrap the element in Context.Provider component and set a value
+`<UserContext.Provider value={this.state.currentUser}>`
+
+3. Use Context.Consumer to use it 
+Wrap the child component in the Context.Consumer component
+This Context.Consumer expects a function as the child, so we cannot just pass an element, for example a div
+So a lambda expression can be passed
+
+
+    <UserContext.Consumer>
+        {userContext => <div>Movie List {userContext.name}</div>}
+    </UserContext.Consumer>
+
+4. In the component tree context will be shown as Context. This is a generic name  
+It is a good practice to give each context an explicit name using Context.displayName
+`UserContext.displayName = 'UserContext'; `
+So the above context will be shown as UserContext.Provider and UserContext.Consumer in the component tree
+
+#### Context outside render method
+
+- If we want to consume a context outside the render method like inside a lifecycle hook as componentDidMount  
+- Outside the render method we do not have access to the Context.Consumer component  
+- Solution is to set a static property before/after creating a class  
+- Static property: A property that belongs to a class not an object  
+- Below is setting the contextType explicitly after creating the class  
+`MovieList.contextType = UserContext;` src/context/MovieList.jsx:21  
+
+- After setting the static property the context can be used as below
+
+      componentDidMount() {
+         console.log(this.context); //returns the current user object
+      }
+
+- The static property can be set as part of creating the class as well 
+  `static contextType = UserContext;` src/context/MovieList.jsx:5
+
+### Context in Functional Components
+
+- Best to use functional components over class components with context
+- useContext(Context) hook can be used
+  `const currentUser = useContext(UserContext);` src/context/MovieRow.jsx:5
+- By using the hook we can use the context value inside and outside the render component
+- When using function components the Consumer component will not be in the component tree so this reduces complexity
+
+### Redux
+
+Maintains a store which contains the global state of the application  
+So data can be shared across components  
+
