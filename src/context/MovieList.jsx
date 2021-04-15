@@ -13,7 +13,7 @@ class MovieList extends Component {
         return (
             //Consumer Expects a function as a child
             <UserContext.Consumer>
-                {userContext => <div>Movie List {userContext.name} <MovieRow/> </div>}
+                {userContext => <div>Movie List {userContext.currentUser ? userContext.currentUser.name : ""} <MovieRow/> </div>}
             </UserContext.Consumer>
         );
     }
