@@ -106,7 +106,9 @@ So a lambda expression can be passed
 4. In the component tree context will be shown as Context. This is a generic name  
 It is a good practice to give each context an explicit name using Context.displayName
 `UserContext.displayName = 'UserContext'; `
-So the above context will be shown as UserContext.Provider and UserContext.Consumer in the component tree
+So the above context will be shown as UserContext.Provider and UserContext.Consumer in the component tree  
+
+When using multiple contexts we need to wrap each context around the element
 
 #### Context outside render method
 
@@ -133,6 +135,11 @@ So the above context will be shown as UserContext.Provider and UserContext.Consu
   `const currentUser = useContext(UserContext);` src/context/MovieRow.jsx:5
 - By using the hook we can use the context value inside and outside the render component
 - When using function components the Consumer component will not be in the component tree so this reduces complexity
+
+### Updating Context
+
+src/App.js:37
+We need to pass functions to handle the change (Update the state) like passing props
 
 ### Redux
 
