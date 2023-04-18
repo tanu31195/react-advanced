@@ -26,6 +26,13 @@ HOC functions are prefixed using `with`
 - Hooks are helpful to isolate the state and side-effects from a component and encourage reusability.
 - The React developer community aggressively adopts React Hooks over Higher-Order Components for a new implementation.
 
+### Caveats <https://legacy.reactjs.org/docs/higher-order-components.html#caveats>
+
+- Don’t Use HOCs Inside the render Method
+- Static Methods Must Be Copied Over
+- Refs Aren’t Passed Through
+
+
 ## Hooks(16.8) <https://reactjs.org/docs/hooks-intro.html>
 
 Enables state and lifecycle features in functional components  
