@@ -15,6 +15,15 @@ HOC can return a class or function component
 
 HOC functions are prefixed using `with`
 
+- The Higher-Order Component(HOC) Pattern is a popular React pattern to empower reusability among components.
+- HOC is a function that takes a component as an argument and returns an enhanced version.
+- HOC helps to isolate logic and state management in a separate class-based component.
+- With React Hooks, state management can occur outside of a class.
+- Hooks empower developers to use the functional programming aspects in React.
+- There are standard hooks, and we can write custom hooks.
+- Hooks are helpful to isolate the state and side-effects from a component and encourage reusability.
+- The React developer community aggressively adopts React Hooks over Higher-Order Components for a new implementation.
+
 ## Hooks(16.8) <https://reactjs.org/docs/hooks-intro.html>
 
 Enables state and lifecycle features in functional components  
