@@ -2,6 +2,8 @@
 
 ## Higher Order Components <https://reactjs.org/docs/higher-order-components.html>
 
+[The Transition From Higher-Order Component Pattern To React Hooks Pattern](https://blog.openreplay.com/the-transition-from-higher-order-component-pattern-to-react-hooks-pattern/#:~:text=HOC%20helps%20to%20isolate%20logic,we%20can%20write%20custom%20hooks.)
+
 Used to reuse logic across components(sharing logic)
 
 For example tooltip functionality  
