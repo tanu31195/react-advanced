@@ -32,6 +32,13 @@ HOC functions are prefixed using `with`
 - Static Methods Must Be Copied Over
 - Refs Aren’t Passed Through
 
+## Controlled vs Uncontrolled components in react
+
+Controlled components are components where the state is managed by React. In other words, the component receives its current value and callbacks to update that value through props. When the user interacts with a controlled component, it will notify the parent component and update its state through the callback. This means that the parent component has full control over the state of the controlled component.
+
+For example if an input has `<input value= (name) onChanges {e => setName (e. target.value)) />`
+Component will be controlled when setting an initial value `const [name, setName] = useState('')`. 
+Component will be uncontrolled if the initial values are null or undefined `const [name, setName] = useState()`. This is also incorrect implementation and should not be done.
 
 ## Hooks(16.8) <https://reactjs.org/docs/hooks-intro.html>
 
@@ -45,10 +52,21 @@ Prefix hooks with `use`
 
 ### useState Hook
 
-Allows to hook into react state  
-Cannot be called inside if statements or loops or nested functions  
-This is because React relies on the order which the hooks are called to manage state internally  
-React hooks must be called in the exact same order in every component render  
+- Never change the state variable directly always use setState `count + 1`
+- Allows to hook into react state  
+- Cannot be called inside if statements or loops or nested functions  
+- This is because React relies on the order which the hooks are called to manage state internally  
+- React hooks must be called in the exact same order in every component render  
+- State not updated immediately. setState is run asynchronously(in background) so if you want to make sure something happens after the state update only you can pass a call back function to setState or use useEffect hook.
+- Multiple setState will be batched together and the state will be updated if previous state is not used only the last setState will be applied
+- Pass a function to setState to get the previous state and then update state using it `setCount(prevCount => prevCount + 1)`
+- When using useState() set an initial value and don't keep it null or undefined. Because it will cause the component/ input to be an uncontrolled component and then change to a controlled component/input when a value is set 
+- Correct `const [name, setName] = useState('')`. Wrong `const [name, setName] = useState()`
+
+- If we are working with arrays make sure to return a new array/object instead of modifying the existing array. Keys help to improve performance by only changing the changed object in the list.
+- Do not store copies of objects. Keep only a reference by saving id in state rather than a copy of the object on list (Derived state).
+- Avoid derived state(creating new state from existing state)
+- Use useRef instead of useState for form inputs.
 
 ### useEffect Hook
 
@@ -56,20 +74,27 @@ useEffect hook will enable lifecycle methods in functional components
 - componentDidMount() : Called when component is mounted for the 1st time
 - componentDidUpdate() : Called when component is updated(receives new props or state changes)
 - componentWillUnmount() : Called when the component is unmounted
+
+- useEffect runs after all state changes are done
+
 <hr>
 
-
         useEffect(() => {
-        //This function will be called everytime the component renders(didMount and didUpdate)
+        //This function will be called every time the component renders(didMount and didUpdate)
         });
 <hr>
 
+<hr>
+        useEffect(() => {
+        //This function will be called only when the component renders(didMount)
+        }, []);
+<hr>
 
         useEffect(() => {
         //We can give an array of dependencies
         //So this function will be called only when val1 or val2 is changed
-        //Remove the array to call everytime
-        //Do not leave an empty array beacuse it will not be called after the component is mounted
+        //Remove the array to call every time
+        //Do not leave an empty array because it will not be called after the component is mounted
         }, [val1, val2]);
 <hr>
 
@@ -78,7 +103,7 @@ useEffect hook will enable lifecycle methods in functional components
         return () => {
         //By adding a return function it will act as unmount
         //Here we can write all the clean up code
-        //If no dependencies are given it will be called everytime
+        //If no dependencies are given it will be called every time
         }
         }, [val1, val2]);
 
@@ -87,6 +112,37 @@ useEffect hook will enable lifecycle methods in functional components
 When using network/API calls we need to use async await functions  
 Function that is passed to the useEffect hook should be a regular function  
 Check src/hooks/Users.jsx:7
+
+    const user = { age, name }
+
+    useEffect ( () =› { console. log (user)
+    }, [name, age])
+
+Above is not recommended because we are using user but in array name and age is given to fix this check below
+
+- Use AbortController in clean up(useEffect return) to abort fetch requests when the component is unmounted or re-renders fast
+
+### useMemo Hook
+
+This hook is used to memoize a value so that it only changes when its dependencies change. This can help optimize performance by preventing unnecessary calculations.
+When dependencies change run the function and return.
+
+    const user = useMemo ( ( ) =› {
+    return { age, name }
+    }, [name, age])
+
+    useEffect ( ( ) =› { console. log (user)
+    }, [user])
+
+Same reference is used
+
+### useTransition Hook
+
+Allows to do non urgent updates which won't change the UI until it's done
+Can use isPending state to show loaders
+
+`const [isPending, startTransition] = useTransition()`
+
 
 ### Custom hooks
 
@@ -164,3 +220,90 @@ We need to pass functions to handle the change (Update the state) like passing p
 Maintains a store which contains the global state of the application  
 So data can be shared across components  
 
+- We have the UI, Actions, and State
+- From the UI actions are dispatched and are identified with the `type` property
+- Then the dispatched action's specific reducers update the state. (Reducers are pure functions that take the current state and an action as input and return a new state.)
+- Store maintains the state: The state of the application is stored in a single object called the store. The store is created using the createStore method and holds the current state tree of the application
+
+#### Redux vs Redux Toolkit
+
+Redux is a state management library for JavaScript applications, often used with React. It provides a predictable state container and a set of tools for managing application state in a more organized and efficient way.
+
+Redux Toolkit, on the other hand, is a package that provides a set of utilities and best practices for using Redux. It includes utilities to simplify common Redux use cases, such as creating Redux stores, creating Redux slices (which are reducers and actions together), and creating asynchronous Redux logic.
+
+In other words, Redux Toolkit is essentially a collection of tools and recommended practices for using Redux, with the goal of making it easier and faster to write Redux code.
+
+Some of the specific features of Redux Toolkit include:
+
+- A configureStore function that simplifies the process of creating a Redux store with middleware and other configuration options.
+- A createSlice function that generates a slice of the Redux store with a reducer function and corresponding action creators.
+- A set of utilities for working with asynchronous logic, including the createAsyncThunk function for creating async actions and the createEntityAdapter function for managing normalized data.
+
+Overall, while Redux provides a lot of power and flexibility, it can also be somewhat verbose and require a lot of boilerplate code. Redux Toolkit aims to streamline and simplify the Redux development experience, making it more accessible and approachable for developers of all levels.
+
+#### Redux Thunk
+
+Overall, Redux-Thunk allows you to handle asynchronous operations in a way that integrates seamlessly with the Redux architecture.
+
+Redux-Thunk is a middleware for Redux that allows you to write asynchronous logic that interacts with the Redux store. It is commonly used in React applications that use Redux for state management.
+
+In Redux, actions are typically plain JavaScript objects that describe a change in the application state. Reducers then take those actions and update the state accordingly. However, sometimes you need to perform asynchronous operations, such as fetching data from a server or making a network request. This is where Redux-Thunk comes in.
+
+With Redux-Thunk, you can dispatch functions (called "thunks") instead of plain objects as actions. These thunks can contain asynchronous logic and have access to the Redux store's dispatch and getState methods. When a thunk is dispatched, it can perform the asynchronous operation and then dispatch additional actions to update the state based on the result of the operation.
+
+#### MobX and Redux
+
+Redux is a more rigid and verbose library that provides a structured and scalable architecture while MobX is more flexible and lightweight, offering easier learning curves and improved performance.
+
+- Architecture:
+Redux follows a strict unidirectional data flow, while MobX provides a more flexible architecture that allows for bi-directional data flow. In Redux, data flows in a single direction through a centralized store, with actions dispatched to update the store and trigger UI updates. In MobX, data can flow in both directions between the store and components, making it easier to handle complex data relationships.
+- Complexity:
+Redux can be more complex to set up and use because it requires more boilerplate code, such as creating action types, actions, and reducers. MobX, on the other hand, is more straightforward and requires less boilerplate code.
+- Performance:
+MobX can be more performant than Redux because it uses a reactive programming model that automatically updates the UI when data changes. Redux, on the other hand, requires manual updates to the UI through actions and reducers.
+- Learning Curve:
+Redux can have a steeper learning curve than MobX, especially for developers new to functional programming and Redux's unidirectional data flow. MobX's reactive programming model, on the other hand, can be easier for developers to understand and work with.
+
+## Improve performance in React apps
+
+- Use the latest version of React: Always use the latest version of React as it contains performance improvements and bug fixes.
+- Use Production Builds: Use the production build of React in your app to minimize the file size and optimize performance.
+- Implement Code Splitting: Code splitting is a technique to break up your code into smaller chunks, which can be loaded on-demand when needed. This technique can significantly improve the initial load time of your app.
+- Optimize Rendering: React renders only the necessary components when the state or props change. You can optimize rendering by using React.memo to memoize components and prevent unnecessary re-renders.
+- Avoid unnecessary re-renders: Use the shouldComponentUpdate lifecycle method or React.PureComponent to prevent unnecessary re-renders of components.
+- Use Virtualization: Use virtualization techniques, such as react-virtualized or react-window, to render only the visible portion of a large list or table, which can significantly improve the rendering performance.
+- Optimize Images: Optimize the images used in your app by compressing and resizing them, using webp format instead of jpg or png where possible, and lazy loading them to reduce the initial page load time.
+- Avoid unnecessary state changes: Avoid setting state unnecessarily, and use useCallback and useMemo hooks to optimize performance when working with state and props.
+- Avoid using too many third-party libraries: Limit the number of third-party libraries used in your app to improve the app's performance.
+- Measure Performance: Use tools like React DevTools, Chrome DevTools, and Lighthouse to measure your app's performance and identify areas for improvement.
+
+### Code Splitting
+
+- Can code split functions as below,
+
+Dynamic imports
+
+    <button 
+    onClick=(() =› {
+    import(* ../sum.js"). then (module => {
+    alert(module.sum(2,2))})
+    })
+    >
+
+- Can code split components by dynamic imports using `lazy()` and `<Suspense fallback={<h2>Loading...‹/h2>}></Suspense>` can set a fallback prop with a component till it loads.
+
+   const Store = lazy (() => import(" . /components/Store")) //For default functions
+   const About = lazy (() =›  import (" . /components/About"). then (module =› { return { default: module.About } })) //For named functions
+
+- Conditional Code Splitting
+- useTransition hook
+
+## React Strict mode
+
+- Helps highlight potential problems in a React`<React.StrictMode><App /></React.StrictMode>`
+- Can wrap certain parts of the App or components
+- Used only at development, when pushed to production it will work as normal
+- Detects unintended side effects (Use useEffects to perform actions and not with setState)
+- React has 2 phases (Render and commit)
+- Detects mount/unmount side effects (Clean up use effects)
+- Detects deprecated methods and other legacy usages
