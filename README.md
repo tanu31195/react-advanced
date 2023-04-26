@@ -298,6 +298,22 @@ Dynamic imports
 - Conditional Code Splitting
 - useTransition hook
 
+### Pure components
+
+React Pure Components are a performance optimization technique in React that reduce unnecessary re-rendering of components. They work by implementing a `shouldComponentUpdate` lifecycle method that compares the current props and state with the previous props and state, and determines if the component needs to re-render.
+
+The `shouldComponentUpdate` method in a React Pure Component performs a shallow comparison of the props and state. Shallow comparison means that only the top-level properties of the props and state objects are compared, not their nested properties. If there are no changes in the top-level properties of the props and state objects, then the component does not need to re-render.
+
+React Pure Components are useful when you have components that receive a lot of props or state updates, and you want to optimize performance by reducing unnecessary re-rendering. However, it's important to note that using React Pure Components is not always the best solution, especially when dealing with deeply nested objects or arrays. In those cases, a regular React Component with a custom `shouldComponentUpdate` method that performs a deep comparison may be more appropriate.
+
+A functional component can be pure, just like a class component can be pure. In fact, React provides a `React.memo` higher-order component that can be used to memoize and optimize functional components in the same way that PureComponent optimizes class components.
+
+`React.memo` is a higher-order component that accepts a functional component as its argument and returns a new memoized component. The memoized component will only re-render if its props have changed.
+
+The memoized component will only re-render if its props have changed. If the props haven't changed, the memoized component will reuse the previously rendered output, which can improve the performance of your React application.
+
+It's important to note that memoization can have a performance cost, especially when dealing with complex or deeply nested objects. Therefore, you should only use memoization when you have a component that re-renders frequently and the cost of re-rendering outweighs the cost of memoization.
+
 ## React Strict mode
 
 - Helps highlight potential problems in a React`<React.StrictMode><App /></React.StrictMode>`
